@@ -1,0 +1,5 @@
+/home/fabio/Documents/Git/IAssitance/.utmp/Debug/5i6m5u3g/arm64-v8a/CMakeFiles/edit_cache.dir
+/home/fabio/Documents/Git/IAssitance/.utmp/Debug/5i6m5u3g/arm64-v8a/CMakeFiles/rebuild_cache.dir
+/home/fabio/Documents/Git/IAssitance/.utmp/Debug/5i6m5u3g/arm64-v8a/GameActivity/CMakeFiles/game.dir
+/home/fabio/Documents/Git/IAssitance/.utmp/Debug/5i6m5u3g/arm64-v8a/GameActivity/CMakeFiles/edit_cache.dir
+/home/fabio/Documents/Git/IAssitance/.utmp/Debug/5i6m5u3g/arm64-v8a/GameActivity/CMakeFiles/rebuild_cache.dir

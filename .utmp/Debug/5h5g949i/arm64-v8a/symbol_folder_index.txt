@@ -1,0 +1,1 @@
+/home/fabio/Documents/Git/IAssitance/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/Debug/5h5g949i/obj/arm64-v8a

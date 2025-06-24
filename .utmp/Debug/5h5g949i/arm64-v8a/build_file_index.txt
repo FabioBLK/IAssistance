@@ -1,0 +1,2 @@
+/home/fabio/Documents/Git/IAssitance/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/src/main/cpp/CMakeLists.txt
+/home/fabio/Documents/Git/IAssitance/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/src/main/cpp/GameActivity/CMakeLists.txt
