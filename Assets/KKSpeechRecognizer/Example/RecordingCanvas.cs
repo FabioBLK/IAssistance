@@ -5,11 +5,17 @@ using KKSpeech;
 
 public class RecordingCanvas : MonoBehaviour
 {
-  public Button startRecordingButton;
-  public Text resultText;
+  [SerializeField] private NetworkSettings networkSettings;
+  [SerializeField] private Button startRecordingButton;
+  [SerializeField] private Text resultText;
+  [SerializeField] private Text apiText;
+
+  private WebRequester _webRequester;
 
   void Start()
   {
+    _webRequester = new WebRequester(this, networkSettings);
+    
     if (SpeechRecognizer.ExistsOnDevice())
     {
       SpeechRecognizerListener listener = GameObject.FindObjectOfType<SpeechRecognizerListener>();
@@ -25,10 +31,8 @@ public class RecordingCanvas : MonoBehaviour
     else
     {
       resultText.text = "Sorry, but this device doesn't support speech recognition";
-      startRecordingButton.enabled = false;
+      //startRecordingButton.enabled = false;
     }
-
-
   }
 
   public void OnFinalResult(string result)
@@ -36,6 +40,26 @@ public class RecordingCanvas : MonoBehaviour
     startRecordingButton.GetComponentInChildren<Text>().text = "Start Recording";
     resultText.text = result;
     startRecordingButton.enabled = true;
+
+    Debug.LogWarning($"-----QUESTION IS {result}");
+    SendQuestionToApi(result);
+  }
+
+  private void SendQuestionToApi(string question)
+  {
+    _webRequester.AskQuestion(question, OnAskQuestionSuccess, OnAskQuestionFailure);
+  }
+
+  private void OnAskQuestionSuccess(string obj)
+  {
+    Debug.LogWarning($"Success getting answer from Api - {obj}");
+    AiResponse response = JsonUtility.FromJson<AiResponse>(obj);
+    apiText.text = response.response;
+  }
+
+  private void OnAskQuestionFailure(HTTPErrorMessage obj)
+  {
+    Debug.LogError($"Failed to get question from the api {obj.errorCode} - {obj.message}");
   }
 
   public void OnPartialResult(string result)
@@ -52,7 +76,7 @@ public class RecordingCanvas : MonoBehaviour
     }
     else
     {
-      resultText.text = "Say something :-)";
+      resultText.text = "Faça sua pergunta! :-)";
     }
   }
 
@@ -72,18 +96,25 @@ public class RecordingCanvas : MonoBehaviour
 
   public void OnEndOfSpeech()
   {
-    startRecordingButton.GetComponentInChildren<Text>().text = "Start Recording";
+    startRecordingButton.GetComponentInChildren<Text>().text = "";
   }
 
   public void OnError(string error)
   {
     Debug.LogError(error);
-    startRecordingButton.GetComponentInChildren<Text>().text = "Start Recording";
+    startRecordingButton.GetComponentInChildren<Text>().text = "";
     startRecordingButton.enabled = true;
   }
 
   public void OnStartRecordingPressed()
   {
+    apiText.text = string.Empty;
+    
+  #if UNITY_EDITOR
+    SendQuestionToApi(resultText.text);
+    return;
+  #endif
+    
     if (SpeechRecognizer.IsRecording())
     {
 #if UNITY_IOS && !UNITY_EDITOR
@@ -98,8 +129,8 @@ public class RecordingCanvas : MonoBehaviour
     else
     {
       SpeechRecognizer.StartRecording(true);
-      startRecordingButton.GetComponentInChildren<Text>().text = "Stop Recording";
-      resultText.text = "Say something :-)";
+      startRecordingButton.GetComponentInChildren<Text>().text = "Parar gravação";
+      resultText.text = "Faça sua pergunta! :-)";
     }
   }
 }

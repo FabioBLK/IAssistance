@@ -22,6 +22,13 @@ public class WebRequester
         m_executer = p_executer;
         m_settings = p_settings;
     }
+
+    public void AskQuestion(string question, Action<string> p_success, Action<HTTPErrorMessage> p_failure)
+    {
+        string body = $"{{\"question\":\"{question}\"}}";
+        IEnumerator request = NetworkRequestAsync(m_settings.Question, body, string.Empty, new Dictionary<string, string>(), p_success, p_failure);
+        m_executer.StartCoroutine(request);
+    }
     
     public void LoginAsync(string p_user, string p_passwd, Action<string> p_success, Action<HTTPErrorMessage> p_failure) {
         string body = string.Format("{{\"email\":\"{0}\",\"password\":\"{1}\"}}", p_user, p_passwd);
