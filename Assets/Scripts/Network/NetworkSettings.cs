@@ -10,4 +10,5 @@ public class NetworkSettings : ScriptableObject
     public EndpointInfo Login;
     public EndpointInfo MyPicture;
     public EndpointInfo Question;
+    public EndpointInfo QuestionAudio;
 }

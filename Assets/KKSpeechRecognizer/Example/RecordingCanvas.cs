@@ -9,6 +9,8 @@ public class RecordingCanvas : MonoBehaviour
   [SerializeField] private Button startRecordingButton;
   [SerializeField] private Text resultText;
   [SerializeField] private Text apiText;
+  [SerializeField] private Toggle audioToggle;
+  [SerializeField] private AudioSource audioSource;
 
   private WebRequester _webRequester;
 
@@ -42,7 +44,15 @@ public class RecordingCanvas : MonoBehaviour
     startRecordingButton.enabled = true;
 
     Debug.LogWarning($"-----QUESTION IS {result}");
-    SendQuestionToApi(result);
+
+    if (audioToggle.isOn)
+    {
+      SendQuestionAudioToApi(result); 
+    }
+    else
+    {
+      SendQuestionToApi(result); 
+    }
   }
 
   private void SendQuestionToApi(string question)
@@ -58,6 +68,28 @@ public class RecordingCanvas : MonoBehaviour
   }
 
   private void OnAskQuestionFailure(HTTPErrorMessage obj)
+  {
+    Debug.LogError($"Failed to get question from the api {obj.errorCode} - {obj.message}");
+  }
+  
+  private void SendQuestionAudioToApi(string question)
+  {
+    _webRequester.AskQuestionAudio(question, OnAskQuestionAudioSuccess, OnAskQuestionAudioFailure);
+  }
+  
+  private void OnAskQuestionAudioSuccess(byte[] obj)
+  {
+    Debug.LogWarning($"Success getting answer from Api - {obj.Length}");
+    
+    var pcmData   = PcmData.FromBytes(obj);
+    var audioClip = AudioClip.Create("audioResult", pcmData.Length, pcmData.Channels, pcmData.SampleRate, false);
+    audioClip.SetData(pcmData.Value, 0);
+
+    audioSource.clip = audioClip;
+    audioSource.Play();
+  }
+
+  private void OnAskQuestionAudioFailure(HTTPErrorMessage obj)
   {
     Debug.LogError($"Failed to get question from the api {obj.errorCode} - {obj.message}");
   }
@@ -111,7 +143,15 @@ public class RecordingCanvas : MonoBehaviour
     apiText.text = string.Empty;
     
   #if UNITY_EDITOR
-    SendQuestionToApi(resultText.text);
+    var question = resultText.text;
+    if (audioToggle.isOn)
+    {
+      SendQuestionAudioToApi(question); 
+    }
+    else
+    {
+      SendQuestionToApi(question); 
+    }
     return;
   #endif
     

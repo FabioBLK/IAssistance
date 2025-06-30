@@ -22,5 +22,8 @@ MonoBehaviour:
     Path: 
     ApiVerb: 
   Question:
-    Path: /question
+    Path: /txt/question
+    ApiVerb: POST
+  QuestionAudio:
+    Path: /audio/question
     ApiVerb: POST

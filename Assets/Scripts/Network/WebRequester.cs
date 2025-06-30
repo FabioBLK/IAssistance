@@ -30,6 +30,13 @@ public class WebRequester
         m_executer.StartCoroutine(request);
     }
     
+    public void AskQuestionAudio(string question, Action<byte[]> p_dataSuccess, Action<HTTPErrorMessage> p_failure)
+    {
+        string body = $"{{\"question\":\"{question}\"}}";
+        IEnumerator request = NetworkRequestAsync(m_settings.QuestionAudio, body, string.Empty, new Dictionary<string, string>(), null, p_failure, true, p_dataSuccess);
+        m_executer.StartCoroutine(request);
+    }
+    
     public void LoginAsync(string p_user, string p_passwd, Action<string> p_success, Action<HTTPErrorMessage> p_failure) {
         string body = string.Format("{{\"email\":\"{0}\",\"password\":\"{1}\"}}", p_user, p_passwd);
         //Debug.Log(body);
